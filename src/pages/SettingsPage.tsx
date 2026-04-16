@@ -3,8 +3,7 @@ import { Save, Plus, Trash2, RotateCcw } from 'lucide-react'
 import { useStore } from '../store'
 import { Card } from '../components/ui/Card'
 import { cn } from '../lib/utils'
-import type { Table, TableShape } from '../types'
-import { generateId } from '../lib/utils'
+import type { TableShape } from '../types'
 
 type Tab = 'general' | 'tables' | 'zones'
 
@@ -13,7 +12,6 @@ export function SettingsPage() {
   const tables = useStore((s) => s.tables)
   const updateSettings = useStore((s) => s.updateSettings)
   const addTable = useStore((s) => s.addTable)
-  const updateTable = useStore((s) => s.updateTable)
   const deleteTable = useStore((s) => s.deleteTable)
 
   const [activeTab, setActiveTab] = useState<Tab>('general')

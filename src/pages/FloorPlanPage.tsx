@@ -132,7 +132,6 @@ export function FloorPlanPage() {
 
             {filteredTables.map((table) => {
               const status = getTableStatus(table, todayReservations)
-              const config = statusConfig[status]
               const dim = getTableDimensions(table)
               const isSelected = selectedTable?.id === table.id
 
