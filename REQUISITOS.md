@@ -145,8 +145,48 @@ Campos útiles a incluir:
 - **No necesario** (descartado para mantener simple)
 
 
-## Bloque 5 — Plano de sala
-*(Pendiente de entrevista)*
+## Bloque 5 — Plano de sala (uso en servicio)
+
+### 5.1 Vista principal
+- **El plano es la vista principal** durante el servicio (más intuitivo y rápido que la lista)
+- Se usa en **tablet o portal web dedicado** en recepción
+- Modo oscuro por defecto (menos cansancio visual)
+- Layout de dos paneles: **lista de reservas (izq) + plano visual (dcha)**
+
+### 5.2 Barra de servicio (siempre visible arriba)
+- **Toggle ON/OFF por turno** (Comida ON / Cena Cerrado)
+  - ON = abierto para reservas online (web/Google)
+  - OFF = cerrado para reservas online (solo telefónico/manual)
+- **Contador de comensales** en tiempo real: "54 / 60" (ocupados / capacidad)
+- **Contador de mesas** en tiempo real: "20 / 23" (ocupadas / total)
+- **Fecha actual** con navegación (← día → ) y botón "HOY"
+- Pestañas: **COMIDA / CENA / DÍA COMPLETO**
+
+### 5.3 Filtros de reservas (panel lista)
+- Filtro por estado: Todas / Re-Confirmadas / Pendientes / Lista de espera
+- Búsqueda por nombre, apellido, teléfono
+- Cada reserva muestra: nº mesa, hora, nombre, nº visitas (badge), pax, estado, canal (CH: Google), info/notas
+- Botones: Crear lista de espera, imprimir, calendario
+
+### 5.4 Plano visual
+- Pestañas por zona: **Salón / Terraza / etc.**
+- Mesas con colores por estado:
+  - **Verde** = reservada/confirmada/sentados
+  - **Marrón/gris** = libre sin reserva
+  - **Candado 🔒** = bloqueada web (solo reservable por staff)
+- Cada mesa muestra: **nº mesa (capacidad), hora, nombre cliente**
+- Icono de estrella ⭐ para mesas combinadas
+- Zoom y desplazamiento
+
+### 5.5 Combinación de mesas (uso frecuente)
+Tres modos de combinar:
+1. **Al crear reserva**: puedes seleccionar múltiples mesas → todas se marcan en verde como grupo
+2. **Desde el plano**: pestaña de desbloquear/mover mesas para reorganizar visualmente y dejarlo ordenado
+3. **Combinaciones predefinidas** (configuración): para reservas online, el sistema asigna automáticamente combinaciones (ej: grupo de 8 → mesa 4+5)
+
+### 5.6 Búsqueda global
+- Siempre visible en el header
+- Busca por nombre de cliente o referencia de reserva
 
 ## Bloque 6 — Pre y post servicio
 *(Pendiente de entrevista)*
