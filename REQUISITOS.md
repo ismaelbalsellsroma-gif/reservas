@@ -64,10 +64,86 @@ Se usan los 7 estados completos durante el servicio:
 7. **Completada**
 
 ## Bloque 3 — No-shows y confirmaciones
-*(Pendiente de entrevista)*
+
+### 3.1 Política de no-shows
+- **Sin política estricta** (sin depósitos ni retención de tarjeta)
+- Confianza: reconfirmación como herramienta principal
+
+### 3.2 Recordatorio
+- **Un único recordatorio la mañana del día** de la reserva
+- Canales: **WhatsApp o Email** (no hace falta SMS de momento)
+- El mensaje incluye **link para confirmar o cancelar en un click**
+- Si el cliente cancela desde el link → se actualiza al **instante** en el sistema del restaurante
+
+### 3.3 Estado de reconfirmación
+Cada reserva muestra de un vistazo si el cliente ha respondido al recordatorio:
+- **Confirmada por el cliente**
+- **Cancelada por el cliente**
+- **Sin respuesta** (para saber a quién llamar por teléfono antes del servicio)
 
 ## Bloque 4 — CRM / Clientes
-*(Pendiente de entrevista)*
+
+### 4.1 Datos del cliente (todos útiles)
+- Nombre, Apellidos
+- Teléfono (con prefijo internacional)
+- Email
+- Idioma preferido
+- Empresa (para clientes corporativos)
+- Alergias / intolerancias
+- Preferencias (mesa, vino, etc.)
+- Cumpleaños / aniversarios
+- Nº visitas + última visita
+- Notas del maître
+- VIP flag
+- Consentimiento comercial (RGPD)
+
+### 4.2 Etiquetas
+- **Personalizables** por cada restaurante
+- Sin etiquetas predefinidas
+- Aplicables a clientes y/o a reservas
+- Libertad total para crear las que necesiten (VIP, celíaco, empresa, influencer, etc.)
+
+### 4.3 Vinculación cliente ↔ reserva
+- Matching **solo por coincidencia exacta de número de teléfono**
+- Si el teléfono ya existe → se reconoce automáticamente como el mismo cliente (rellena datos)
+- Si no existe → se crea nuevo cliente al guardar la reserva
+- No hace falta Caller ID (búsqueda automática por llamada entrante)
+
+### 4.4 Campos obligatorios al crear reserva
+Solo tres campos obligatorios:
+1. **Nombre**
+2. **Apellido**
+3. **Anotado por** (staff que toma la reserva)
+
+Todo lo demás (email, notas, empresa, prescriptor, duración, etiquetas, etc.) es **opcional**.
+
+### 4.5 Formulario de reserva (inspirado en CoverManager)
+Campos útiles a incluir:
+- **Día, Hora, Personas, Duración**
+- **Zona / Mesa(s)** con min/max de capacidad
+- **Estado** (pendiente, confirmada, sentados, comiendo, postre, cuenta, completada)
+- **Tipo de reserva** (gratis, con menú, con prepago...)
+- **Prescriptor** (quién recomendó al cliente)
+- **Código / Referencia** de reserva
+- **Etiquetas de la reserva**
+- **Notas del establecimiento** sobre la reserva
+- **Adjuntar archivo**
+- **Anotado por** (dropdown con staff)
+- **Datos del cliente** (Nombre, Apellido, Idioma, Prefijo país, Tel, Email)
+- **Etiquetas del cliente**
+- **Consentimiento comercial**
+- **Notas del cliente / Información adicional**
+- Botones: **Reservar** y **Reservar y notificar al cliente**
+
+### 4.6 Gestión de staff / usuarios
+- Cada restaurante crea sus **propios nombres de staff** (maître, camareros, recepción)
+- El dropdown "Anotado por" se alimenta de esta lista
+- Cada reserva registra quién la ha creado/modificado
+- Lista editable desde configuración
+
+### 4.7 Caller ID
+- **No necesario** (descartado para mantener simple)
+
 
 ## Bloque 5 — Plano de sala
 *(Pendiente de entrevista)*
