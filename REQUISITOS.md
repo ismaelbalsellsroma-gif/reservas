@@ -189,7 +189,46 @@ Tres modos de combinar:
 - Busca por nombre de cliente o referencia de reserva
 
 ## Bloque 6 — Pre y post servicio
-*(Pendiente de entrevista)*
+
+### 6.1 Antes del servicio
+- No hay informe/resumen previo formal
+- **El plano ES el resumen**: el maître y el equipo lo miran juntos para preparar la sala
+- El plano debe mostrar toda la info relevante a simple vista (nombres, hora, pax, notas)
+- Las notas van **dentro de cada reserva** y son visibles en la lista
+  - Ejemplo: "R: volen al raco de la barra", "R: alemanes e ingleses"
+
+### 6.2 Notas entre turnos
+- **No hace falta sistema de notas aparte**
+- La info se anota en las notas de la propia reserva
+- El siguiente turno la ve al abrir las reservas
+
+### 6.3 Walk-ins
+- Los walk-ins se registran como reserva con nombre "WALK IN" o el nombre del cliente
+- Aparecen tanto en la lista como en el plano como cualquier otra reserva
+
+### 6.4 Mesa TOTAL
+- Mesa especial "0 - TOTAL" usada como control interno (CoverManager feature)
+
+### 6.5 Después del servicio
+- **Sin métricas ni informes post-servicio**
+- No se necesitan: covers totales, no-shows, facturación, etc.
+- Se cierra y se pasa al siguiente turno
 
 ## Bloque 7 — Prioridades personales
-*(Pendiente de entrevista)*
+
+### 7.1 Lo mejor de CoverManager (a replicar)
+- **Velocidad**: todo se hace rápido, pocos clicks
+- **Todo en un panel**: plano + lista + info sin cambiar de pantalla
+- **Mover mesas fácil**: drag & drop fluido e intuitivo
+- **Cada funcionalidad es útil**: no sobra nada
+
+### 7.2 Lo que se echa en falta
+- Nada. CoverManager cumple bien.
+
+### 7.3 Principios de diseño para ReservasPro
+1. **Velocidad ante todo**: respuesta inmediata, mínimos clicks por acción
+2. **Réplica fiel del flujo de CoverManager**: no inventar, seguir lo que funciona
+3. **Todo visible en un panel**: no esconder info en submenús o pantallas separadas
+4. **Tablet-first**: diseñado para uso en tablet/portal web dedicado
+5. **Modo oscuro** por defecto
+6. **Simplicidad**: si una funcionalidad no aporta al servicio diario, no la incluimos
