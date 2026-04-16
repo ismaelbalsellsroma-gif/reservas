@@ -26,15 +26,30 @@ Documento vivo recopilando las decisiones de producto basadas en la experiencia 
 - **Tiempo medio de referencia**: 1,5 horas por grupo (para calcular el aviso de solape)
 - No es un bloqueo estricto, solo un warning
 
-### 1.5 Salas y mesas
+### 1.5 Salas y mesas — Jerarquía y editor
+- **Jerarquía de dos niveles**:
+  - **Planta** (floor/vista): COMEDOR, TERRASSA, PRIVAT → cada una es un plano de sala independiente
+  - **Zona** (sub-área dentro de una planta): dentro de COMEDOR puede haber "Comedor" y "Barra"
 - **Editor visual de sala** (muy importante)
 - Funcionalidades del editor:
-  - Dibujar bordes/paredes de la sala
-  - Colocar mesas: **cuadradas, rectangulares, redondas**
-  - Crear y nombrar **zonas** (terraza, salón, privado, barra, etc.)
-  - Mover, redimensionar y editar mesas
+  - **Gestión de plantas**: crear, renombrar, borrar plantas. Cada planta tiene su propia vista en el plano
+  - **Gestión de zonas**: crear zonas asignadas a una planta. Nombre de zona + planta padre
+  - **Formas de mesa**: cuadrada, redonda, rectangular ancha, rectangular estrecha, pequeña
+  - **Propiedades por mesa**: ID, Zona, Min pax, Max pax, Mesa alta / Mesa baja
+  - **Elementos decorativos**: paredes, plantas, estrellas, sombrillas, barreras → para hacer el plano realista
+  - Drag & drop en el canvas para posicionar mesas y decoración
   - Ajustar hasta que coincida con el restaurante real
 - Cada restaurante se crea su propio layout
+- Pestañas por planta en el editor (COMEDOR / TERRASSA / PRIVAT)
+
+### 1.6 Combinaciones de mesas predefinidas
+- Se definen desde configuración (pestaña "Combinación de mesas")
+- Cada combinación especifica:
+  - **Qué mesas** se combinan (ej: 20, 21, 25, 26, 27)
+  - **Max pax** y **Min pax** para esa combinación
+- Checkbox **"Subcombinable"**: permite que una combinación sea parte de otra mayor
+  - Ej: Mesas 26+27 (4-6 pax) es sub-combinación de 20+21+25+26+27 (10-16 pax)
+- Usado para **reservas online**: el sistema asigna automáticamente la combinación correcta según tamaño del grupo
 
 ## Bloque 2 — Canales y walk-ins
 
@@ -143,6 +158,28 @@ Campos útiles a incluir:
 
 ### 4.7 Caller ID
 - **No necesario** (descartado para mantener simple)
+
+### 4.8 Listado de clientes (vista base de datos)
+- Vista tabla con columnas: Nombre, Apellidos, Teléfono, Email, Empresa, Etiquetas, Notas del cliente
+- **Búsqueda** por texto libre
+- **Filtro por etiqueta**
+- **Selección masiva** (checkboxes) para acciones en lote (borrar, exportar...)
+- Botón "+ AÑADIR NUEVO CLIENTE"
+- Dos botones por cliente: ver perfil / ver detalle rápido
+- Columnas ordenables (click en header)
+
+### 4.9 Detalle de cliente (perfil completo)
+- **Panel izquierdo**: Avatar, nombre, país, idioma, botones: Editar datos, **Unificar cliente**, Eliminar cliente
+- **"Unificar cliente"**: fusiona dos registros duplicados (muy útil cuando hay matching por teléfono imperfecto)
+- **Acciones rápidas**: Añadir reserva, Enviar email, Enviar SMS
+- **Resumen de comportamiento**:
+  - Última visita, Gasto total, Gasto por visita, Gasto por persona
+  - Visitas, No-shows, Canceladas, Media de valoraciones
+  - Reservas en el grupo, Reservas como invitado, Listas de espera
+- **Histórico de comportamientos**:
+  - Dropdown para filtrar: Reservas, Listas de espera, etc.
+  - Tabla: Estado, Fecha, Hora, Personas, Mesa(s), Notas de la reserva, Importe
+  - Paginación
 
 
 ## Bloque 5 — Plano de sala (uso en servicio)
