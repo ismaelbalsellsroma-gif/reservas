@@ -1,100 +1,147 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { Reservation, Table, Guest, RestaurantSettings } from '../types'
-import { generateId, getTodayString } from '../lib/utils'
+import type {
+  Reservation,
+  Table,
+  Zone,
+  Planta,
+  Decoration,
+  TableCombination,
+  Guest,
+  StaffMember,
+  Shift,
+  RestaurantSettings,
+  ServiceState,
+} from '../types'
+import { generateId, generateCode, getTodayString } from '../lib/utils'
+import { seed } from './seed'
 
 interface AppState {
+  // Data
   reservations: Reservation[]
   tables: Table[]
+  zones: Zone[]
+  plantas: Planta[]
+  decorations: Decoration[]
+  combinations: TableCombination[]
   guests: Guest[]
+  staff: StaffMember[]
+  shifts: Shift[]
   settings: RestaurantSettings
+  tags: string[] // Etiquetas disponibles
 
-  addReservation: (reservation: Omit<Reservation, 'id' | 'createdAt'>) => void
+  // UI state
+  service: ServiceState
+
+  // Actions - Reservations
+  addReservation: (r: Omit<Reservation, 'id' | 'code' | 'createdAt' | 'updatedAt'>) => string
   updateReservation: (id: string, data: Partial<Reservation>) => void
   deleteReservation: (id: string) => void
+  setReservationStatus: (id: string, status: Reservation['status']) => void
+  moveReservationTables: (id: string, tableIds: string[]) => void
 
-  addTable: (table: Omit<Table, 'id'>) => void
+  // Actions - Tables
+  addTable: (t: Omit<Table, 'id'>) => string
   updateTable: (id: string, data: Partial<Table>) => void
   deleteTable: (id: string) => void
+  toggleTableWebBlock: (id: string) => void
 
-  addGuest: (guest: Omit<Guest, 'id' | 'visits' | 'lastVisit'>) => void
+  // Actions - Zones / Plantas
+  addPlanta: (name: string) => string
+  updatePlanta: (id: string, data: Partial<Planta>) => void
+  deletePlanta: (id: string) => void
+  addZone: (name: string, plantaId: string) => string
+  updateZone: (id: string, data: Partial<Zone>) => void
+  deleteZone: (id: string) => void
+
+  // Decorations
+  addDecoration: (d: Omit<Decoration, 'id'>) => string
+  updateDecoration: (id: string, data: Partial<Decoration>) => void
+  deleteDecoration: (id: string) => void
+
+  // Combinations
+  addCombination: (c: Omit<TableCombination, 'id'>) => string
+  updateCombination: (id: string, data: Partial<TableCombination>) => void
+  deleteCombination: (id: string) => void
+
+  // Guests
+  addGuest: (g: Omit<Guest, 'id' | 'visits' | 'noShows' | 'cancellations' | 'lastVisit' | 'createdAt'>) => string
   updateGuest: (id: string, data: Partial<Guest>) => void
   deleteGuest: (id: string) => void
+  findGuestByPhone: (phone: string) => Guest | undefined
+  mergeGuests: (keepId: string, removeId: string) => void
 
-  updateSettings: (settings: Partial<RestaurantSettings>) => void
-}
+  // Staff
+  addStaff: (s: Omit<StaffMember, 'id'>) => string
+  updateStaff: (id: string, data: Partial<StaffMember>) => void
+  deleteStaff: (id: string) => void
 
-const today = getTodayString()
+  // Shifts
+  addShift: (s: Omit<Shift, 'id'>) => string
+  updateShift: (id: string, data: Partial<Shift>) => void
+  deleteShift: (id: string) => void
+  toggleShiftOnline: (id: string) => void
 
-const defaultTables: Table[] = [
-  { id: 't1', name: 'Mesa 1', capacity: 2, shape: 'round', x: 80, y: 80, zone: 'Terraza' },
-  { id: 't2', name: 'Mesa 2', capacity: 2, shape: 'round', x: 200, y: 80, zone: 'Terraza' },
-  { id: 't3', name: 'Mesa 3', capacity: 4, shape: 'square', x: 320, y: 80, zone: 'Terraza' },
-  { id: 't4', name: 'Mesa 4', capacity: 4, shape: 'square', x: 80, y: 220, zone: 'Salón principal' },
-  { id: 't5', name: 'Mesa 5', capacity: 6, shape: 'rectangle', x: 220, y: 220, zone: 'Salón principal' },
-  { id: 't6', name: 'Mesa 6', capacity: 6, shape: 'rectangle', x: 400, y: 220, zone: 'Salón principal' },
-  { id: 't7', name: 'Mesa 7', capacity: 8, shape: 'rectangle', x: 80, y: 360, zone: 'Salón privado' },
-  { id: 't8', name: 'Mesa 8', capacity: 4, shape: 'round', x: 280, y: 360, zone: 'Salón privado' },
-  { id: 't9', name: 'Mesa 9', capacity: 2, shape: 'round', x: 440, y: 80, zone: 'Terraza' },
-  { id: 't10', name: 'Mesa 10', capacity: 10, shape: 'rectangle', x: 400, y: 360, zone: 'Salón privado' },
-]
+  // Tags
+  addTag: (tag: string) => void
+  removeTag: (tag: string) => void
 
-const defaultGuests: Guest[] = [
-  { id: 'g1', name: 'Carlos García', phone: '+34 612 345 678', email: 'carlos@email.com', visits: 12, lastVisit: today, vip: true, notes: 'Prefiere vino tinto', tags: ['VIP', 'Regular'] },
-  { id: 'g2', name: 'María López', phone: '+34 623 456 789', email: 'maria@email.com', visits: 5, lastVisit: today, vip: false, notes: 'Alergia al gluten', tags: ['Alergia'] },
-  { id: 'g3', name: 'Pedro Martínez', phone: '+34 634 567 890', email: 'pedro@email.com', visits: 8, lastVisit: today, vip: true, notes: '', tags: ['VIP', 'Empresa'] },
-  { id: 'g4', name: 'Ana Fernández', phone: '+34 645 678 901', email: 'ana@email.com', visits: 3, lastVisit: today, vip: false, notes: 'Cumpleaños en mayo', tags: [] },
-  { id: 'g5', name: 'Luis Rodríguez', phone: '+34 656 789 012', email: 'luis@email.com', visits: 20, lastVisit: today, vip: true, notes: 'Cliente desde 2020', tags: ['VIP', 'Regular'] },
-]
+  // Settings
+  updateSettings: (data: Partial<RestaurantSettings>) => void
 
-const defaultReservations: Reservation[] = [
-  { id: 'r1', guestId: 'g1', guestName: 'Carlos García', guestPhone: '+34 612 345 678', guestEmail: 'carlos@email.com', date: today, time: '13:00', partySize: 2, tableId: 't1', status: 'confirmed', notes: 'Aniversario', createdAt: today },
-  { id: 'r2', guestId: 'g2', guestName: 'María López', guestPhone: '+34 623 456 789', guestEmail: 'maria@email.com', date: today, time: '14:00', partySize: 4, tableId: 't4', status: 'confirmed', notes: 'Sin gluten', createdAt: today },
-  { id: 'r3', guestId: 'g3', guestName: 'Pedro Martínez', guestPhone: '+34 634 567 890', guestEmail: 'pedro@email.com', date: today, time: '21:00', partySize: 6, tableId: 't5', status: 'pending', notes: 'Cena de negocios', createdAt: today },
-  { id: 'r4', guestId: 'g4', guestName: 'Ana Fernández', guestPhone: '+34 645 678 901', guestEmail: 'ana@email.com', date: today, time: '20:30', partySize: 2, tableId: 't2', status: 'confirmed', notes: '', createdAt: today },
-  { id: 'r5', guestId: 'g5', guestName: 'Luis Rodríguez', guestPhone: '+34 656 789 012', guestEmail: 'luis@email.com', date: today, time: '22:00', partySize: 8, tableId: 't7', status: 'pending', notes: 'Celebración', createdAt: today },
-]
+  // Service UI
+  setServiceDate: (date: string) => void
+  setServiceShift: (shiftId: string | null) => void
+  setServicePlanta: (plantaId: string | null) => void
 
-const defaultSettings: RestaurantSettings = {
-  name: 'Mi Restaurante',
-  openTime: '12:00',
-  closeTime: '00:00',
-  slotDuration: 30,
-  maxPartySize: 12,
-  defaultReservationDuration: 90,
-  zones: ['Terraza', 'Salón principal', 'Salón privado'],
+  // Reset
+  resetAll: () => void
 }
 
 export const useStore = create<AppState>()(
   persist(
-    (set) => ({
-      reservations: defaultReservations,
-      tables: defaultTables,
-      guests: defaultGuests,
-      settings: defaultSettings,
+    (set, get) => ({
+      ...seed(),
+      service: {
+        currentDate: getTodayString(),
+        currentShiftId: null,
+        currentPlantaId: null,
+      },
 
-      addReservation: (reservation) =>
+      // Reservations
+      addReservation: (r) => {
+        const id = generateId()
+        const code = generateCode()
+        const now = new Date().toISOString()
         set((state) => {
-          const newReservation: Reservation = {
-            ...reservation,
-            id: generateId(),
-            createdAt: new Date().toISOString(),
-          }
-          const guest = state.guests.find((g) => g.id === reservation.guestId)
-          const updatedGuests = guest
+          const existingGuest = state.guests.find((g) => g.phone === r.guestPhone && r.guestPhone)
+          const updatedGuests = existingGuest
             ? state.guests.map((g) =>
-                g.id === guest.id ? { ...g, visits: g.visits + 1, lastVisit: reservation.date } : g
+                g.id === existingGuest.id
+                  ? { ...g, visits: g.visits + 1, lastVisit: r.date }
+                  : g
               )
             : state.guests
+          const newReservation: Reservation = {
+            ...r,
+            id,
+            code,
+            createdAt: now,
+            updatedAt: now,
+          }
           return {
             reservations: [...state.reservations, newReservation],
             guests: updatedGuests,
           }
-        }),
+        })
+        return id
+      },
 
       updateReservation: (id, data) =>
         set((state) => ({
-          reservations: state.reservations.map((r) => (r.id === id ? { ...r, ...data } : r)),
+          reservations: state.reservations.map((r) =>
+            r.id === id ? { ...r, ...data, updatedAt: new Date().toISOString() } : r
+          ),
         })),
 
       deleteReservation: (id) =>
@@ -102,43 +149,207 @@ export const useStore = create<AppState>()(
           reservations: state.reservations.filter((r) => r.id !== id),
         })),
 
-      addTable: (table) =>
+      setReservationStatus: (id, status) =>
         set((state) => ({
-          tables: [...state.tables, { ...table, id: generateId() }],
+          reservations: state.reservations.map((r) =>
+            r.id === id ? { ...r, status, updatedAt: new Date().toISOString() } : r
+          ),
         })),
 
+      moveReservationTables: (id, tableIds) =>
+        set((state) => ({
+          reservations: state.reservations.map((r) =>
+            r.id === id ? { ...r, tableIds, updatedAt: new Date().toISOString() } : r
+          ),
+        })),
+
+      // Tables
+      addTable: (t) => {
+        const id = generateId()
+        set((state) => ({ tables: [...state.tables, { ...t, id }] }))
+        return id
+      },
       updateTable: (id, data) =>
         set((state) => ({
           tables: state.tables.map((t) => (t.id === id ? { ...t, ...data } : t)),
         })),
-
       deleteTable: (id) =>
+        set((state) => ({ tables: state.tables.filter((t) => t.id !== id) })),
+      toggleTableWebBlock: (id) =>
         set((state) => ({
-          tables: state.tables.filter((t) => t.id !== id),
+          tables: state.tables.map((t) =>
+            t.id === id ? { ...t, webBlocked: !t.webBlocked } : t
+          ),
         })),
 
-      addGuest: (guest) =>
+      // Plantas / Zones
+      addPlanta: (name) => {
+        const id = generateId()
         set((state) => ({
-          guests: [...state.guests, { ...guest, id: generateId(), visits: 0, lastVisit: null }],
+          plantas: [...state.plantas, { id, name, order: state.plantas.length }],
+        }))
+        return id
+      },
+      updatePlanta: (id, data) =>
+        set((state) => ({
+          plantas: state.plantas.map((p) => (p.id === id ? { ...p, ...data } : p)),
+        })),
+      deletePlanta: (id) =>
+        set((state) => {
+          const zonesToRemove = state.zones.filter((z) => z.plantaId === id).map((z) => z.id)
+          return {
+            plantas: state.plantas.filter((p) => p.id !== id),
+            zones: state.zones.filter((z) => z.plantaId !== id),
+            tables: state.tables.filter((t) => !zonesToRemove.includes(t.zoneId)),
+            decorations: state.decorations.filter((d) => d.plantaId !== id),
+          }
+        }),
+
+      addZone: (name, plantaId) => {
+        const id = generateId()
+        set((state) => ({ zones: [...state.zones, { id, name, plantaId }] }))
+        return id
+      },
+      updateZone: (id, data) =>
+        set((state) => ({
+          zones: state.zones.map((z) => (z.id === id ? { ...z, ...data } : z)),
+        })),
+      deleteZone: (id) =>
+        set((state) => ({
+          zones: state.zones.filter((z) => z.id !== id),
+          tables: state.tables.filter((t) => t.zoneId !== id),
         })),
 
+      // Decorations
+      addDecoration: (d) => {
+        const id = generateId()
+        set((state) => ({ decorations: [...state.decorations, { ...d, id }] }))
+        return id
+      },
+      updateDecoration: (id, data) =>
+        set((state) => ({
+          decorations: state.decorations.map((d) => (d.id === id ? { ...d, ...data } : d)),
+        })),
+      deleteDecoration: (id) =>
+        set((state) => ({ decorations: state.decorations.filter((d) => d.id !== id) })),
+
+      // Combinations
+      addCombination: (c) => {
+        const id = generateId()
+        set((state) => ({ combinations: [...state.combinations, { ...c, id }] }))
+        return id
+      },
+      updateCombination: (id, data) =>
+        set((state) => ({
+          combinations: state.combinations.map((c) => (c.id === id ? { ...c, ...data } : c)),
+        })),
+      deleteCombination: (id) =>
+        set((state) => ({ combinations: state.combinations.filter((c) => c.id !== id) })),
+
+      // Guests
+      addGuest: (g) => {
+        const id = generateId()
+        set((state) => ({
+          guests: [
+            ...state.guests,
+            {
+              ...g,
+              id,
+              visits: 0,
+              noShows: 0,
+              cancellations: 0,
+              lastVisit: null,
+              createdAt: new Date().toISOString(),
+            },
+          ],
+        }))
+        return id
+      },
       updateGuest: (id, data) =>
         set((state) => ({
           guests: state.guests.map((g) => (g.id === id ? { ...g, ...data } : g)),
         })),
-
       deleteGuest: (id) =>
+        set((state) => ({ guests: state.guests.filter((g) => g.id !== id) })),
+      findGuestByPhone: (phone) => get().guests.find((g) => g.phone === phone && phone),
+      mergeGuests: (keepId, removeId) =>
+        set((state) => {
+          const keep = state.guests.find((g) => g.id === keepId)
+          const remove = state.guests.find((g) => g.id === removeId)
+          if (!keep || !remove) return state
+          const merged: Guest = {
+            ...keep,
+            visits: keep.visits + remove.visits,
+            noShows: keep.noShows + remove.noShows,
+            cancellations: keep.cancellations + remove.cancellations,
+            tags: Array.from(new Set([...keep.tags, ...remove.tags])),
+            notes: [keep.notes, remove.notes].filter(Boolean).join('\n'),
+          }
+          return {
+            guests: state.guests.filter((g) => g.id !== removeId).map((g) => (g.id === keepId ? merged : g)),
+            reservations: state.reservations.map((r) =>
+              r.guestId === removeId ? { ...r, guestId: keepId } : r
+            ),
+          }
+        }),
+
+      // Staff
+      addStaff: (s) => {
+        const id = generateId()
+        set((state) => ({ staff: [...state.staff, { ...s, id }] }))
+        return id
+      },
+      updateStaff: (id, data) =>
         set((state) => ({
-          guests: state.guests.filter((g) => g.id !== id),
+          staff: state.staff.map((s) => (s.id === id ? { ...s, ...data } : s)),
+        })),
+      deleteStaff: (id) =>
+        set((state) => ({ staff: state.staff.filter((s) => s.id !== id) })),
+
+      // Shifts
+      addShift: (s) => {
+        const id = generateId()
+        set((state) => ({ shifts: [...state.shifts, { ...s, id }] }))
+        return id
+      },
+      updateShift: (id, data) =>
+        set((state) => ({
+          shifts: state.shifts.map((s) => (s.id === id ? { ...s, ...data } : s)),
+        })),
+      deleteShift: (id) =>
+        set((state) => ({ shifts: state.shifts.filter((s) => s.id !== id) })),
+      toggleShiftOnline: (id) =>
+        set((state) => ({
+          shifts: state.shifts.map((s) => (s.id === id ? { ...s, online: !s.online } : s)),
         })),
 
-      updateSettings: (newSettings) =>
+      // Tags
+      addTag: (tag) =>
         set((state) => ({
-          settings: { ...state.settings, ...newSettings },
+          tags: state.tags.includes(tag) ? state.tags : [...state.tags, tag],
         })),
+      removeTag: (tag) =>
+        set((state) => ({ tags: state.tags.filter((t) => t !== tag) })),
+
+      updateSettings: (data) =>
+        set((state) => ({ settings: { ...state.settings, ...data } })),
+
+      setServiceDate: (currentDate) =>
+        set((state) => ({ service: { ...state.service, currentDate } })),
+      setServiceShift: (currentShiftId) =>
+        set((state) => ({ service: { ...state.service, currentShiftId } })),
+      setServicePlanta: (currentPlantaId) =>
+        set((state) => ({ service: { ...state.service, currentPlantaId } })),
+
+      resetAll: () => {
+        localStorage.removeItem('reservas-pro-storage')
+        window.location.reload()
+      },
     }),
     {
       name: 'reservas-pro-storage',
+      version: 2,
+      migrate: () => seed(),
     }
   )
 )

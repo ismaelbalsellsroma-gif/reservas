@@ -225,6 +225,38 @@ Tres modos de combinar:
 - Siempre visible en el header
 - Busca por nombre de cliente o referencia de reserva
 
+### 5.7 Popup de acciones sobre mesa (click en mesa del plano)
+Al hacer click en una mesa se abre un popup con tres secciones:
+
+**Encabezado** — "Mesa: [nº] de [X] Pax" con botón X de cerrar.
+
+**Acciones sobre la mesa** (fila superior):
+- **NUEVA RESERVA** → crear reserva nueva en esa mesa
+- **WALK IN** → registrar walk-in en esa mesa
+- **BLOQUEAR WEB** → toggle candado (solo reservable por staff)
+- **BLOQUEAR** → bloquear mesa entera para el servicio
+- **MODIFICAR** → editar propiedades de la mesa
+
+**Lista de reservas de la mesa** (si hay):
+- Cada reserva con: hora, nombre, pax, mesas asignadas → con botón COPIAR
+- Indicador de cantidad (ej: "1" si hay una reserva)
+
+**Acciones sobre la reserva seleccionada** (fila 1):
+- **DESPLAZAR** → mover a otra mesa
+- **LIBERAR** → marcar como completada / liberar la mesa
+- **BLOQUEAR** → bloquear la reserva
+- **COPIAR** → duplicar la reserva
+
+**Cambio rápido de estado** (fila 2, con color identificativo):
+- **CANCELADA CLIENTE** (gris)
+- **LLEGADA** (rosa)
+- **POSTRE** (azul claro)
+- **SENTADA** (verde)
+- **[NOTA]** (azul oscuro) → añadir nota rápida
+- **NO SHOW** (rojo)
+
+Este popup es la herramienta principal durante el servicio: todo en uno, un solo click para cambiar estado.
+
 ## Bloque 6 — Pre y post servicio
 
 ### 6.1 Antes del servicio
