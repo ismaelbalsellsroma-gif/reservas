@@ -1,30 +1,24 @@
 import { useState } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
 import { Header } from './Header'
 
-const pageTitles: Record<string, string> = {
-  '/': 'Dashboard',
-  '/reservations': 'Reservas',
-  '/floor-plan': 'Mapa de mesas',
-  '/calendar': 'Calendario',
-  '/guests': 'Clientes',
-  '/settings': 'Configuración',
-}
-
 export function Layout() {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const location = useLocation()
-  const title = pageTitles[location.pathname] || 'ReservasPro'
+  const navigate = useNavigate()
+  const [searchQuery, setSearchQuery] = useState('')
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+    <div className="flex h-screen bg-[#0f1620]">
+      <Sidebar />
       <div className="flex-1 flex flex-col min-w-0">
-        <Header onMenuClick={() => setSidebarOpen(true)} title={title} />
-        <main className="flex-1 overflow-y-auto p-4 lg:p-6">
-          <Outlet />
-        </main>
+        <Header
+          onNewReservation={() => navigate('/?newReservation=1')}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
+        <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+          <Outlet context={{ searchQuery }} />
+        </div>
       </div>
     </div>
   )

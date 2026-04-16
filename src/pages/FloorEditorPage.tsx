@@ -1,7 +1,7 @@
-export function SettingsPage() {
+export function FloorEditorPage() {
   return (
     <div className="flex-1 flex items-center justify-center text-gray-500 text-sm">
-      Configuración (Bloque E — en construcción)
+      Editor de sala (Bloque E — en construcción)
     </div>
   )
 }
