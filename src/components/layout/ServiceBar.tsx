@@ -1,9 +1,11 @@
-import { useMemo } from 'react'
-import { ChevronLeft, ChevronRight, Users, Grid3x3 } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { ChevronLeft, ChevronRight, Users, Grid3x3, CalendarDays } from 'lucide-react'
 import { useStore } from '../../store'
 import { cn, addDays, getTodayString } from '../../lib/utils'
+import { CalendarModal } from '../service/CalendarModal'
 
 export function ServiceBar() {
+  const [showCalendar, setShowCalendar] = useState(false)
   const shifts = useStore((s) => s.shifts)
   const reservations = useStore((s) => s.reservations)
   const tables = useStore((s) => s.tables)
@@ -91,9 +93,14 @@ export function ServiceBar() {
         >
           <ChevronLeft size={16} />
         </button>
-        <div className="bg-[#1a2330] px-4 py-1.5 rounded-lg text-sm font-medium text-white">
+        <button
+          onClick={() => setShowCalendar(true)}
+          className="flex items-center gap-2 bg-[#1a2330] hover:bg-[#243040] px-4 py-1.5 rounded-lg text-sm font-medium text-white transition-colors"
+          title="Abrir calendario mensual"
+        >
+          <CalendarDays size={14} className="text-amber-300" />
           {dateLabel}
-        </div>
+        </button>
         <button
           onClick={() => setServiceDate(addDays(service.currentDate, 1))}
           className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#1a2330] hover:bg-[#243040] text-gray-300"
@@ -112,6 +119,13 @@ export function ServiceBar() {
           HOY
         </button>
       </div>
+
+      {showCalendar && (
+        <CalendarModal
+          onClose={() => setShowCalendar(false)}
+          onSelectDay={(d) => setServiceDate(d)}
+        />
+      )}
     </div>
   )
 }
