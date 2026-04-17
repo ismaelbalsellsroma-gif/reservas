@@ -82,6 +82,7 @@ export function FloorEditorPage() {
       height: preset.h,
       zoneId: newZoneId,
       webBlocked: false,
+      blockedDates: [],
       active: true,
     })
     setNewTableName(String(Number(newTableName) + 1) || '')

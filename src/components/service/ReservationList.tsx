@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Search, Bell, MessageSquare, Filter } from 'lucide-react'
+import { Search, Bell, MessageSquare, Filter, Clock, Printer } from 'lucide-react'
 import { useStore } from '../../store'
 import type { Reservation } from '../../types'
 import { cn, getStatusColor, getStatusLabel } from '../../lib/utils'
@@ -8,12 +8,16 @@ type StatusFilter = 'all' | 'confirmed' | 'pending' | 'waiting'
 
 interface ReservationListProps {
   onSelectReservation: (r: Reservation) => void
+  onOpenWaitlist: () => void
+  onPrint: () => void
   searchQuery: string
   onSearchQueryChange: (q: string) => void
 }
 
 export function ReservationList({
   onSelectReservation,
+  onOpenWaitlist,
+  onPrint,
   searchQuery,
   onSearchQueryChange,
 }: ReservationListProps) {
@@ -21,7 +25,14 @@ export function ReservationList({
   const tables = useStore((s) => s.tables)
   const guests = useStore((s) => s.guests)
   const shifts = useStore((s) => s.shifts)
+  const waitlist = useStore((s) => s.waitlist)
   const service = useStore((s) => s.service)
+  const settings = useStore((s) => s.settings)
+  const updateReservation = useStore((s) => s.updateReservation)
+
+  const waitlistCount = waitlist.filter(
+    (w) => w.date === service.currentDate && (w.status === 'waiting' || w.status === 'notified')
+  ).length
 
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
   const [shiftFilter, setShiftFilter] = useState<string | 'all'>('all')
@@ -82,6 +93,61 @@ export function ReservationList({
             {shift.name}
           </button>
         ))}
+      </div>
+
+      {/* Action buttons */}
+      <div className="flex gap-1 p-2 border-b border-[#1f2936]">
+        <button
+          onClick={onOpenWaitlist}
+          className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 bg-amber-400 hover:bg-amber-300 text-slate-900 rounded text-xs font-bold uppercase relative"
+          title="Lista de espera"
+        >
+          <Clock size={12} />
+          Lista de espera
+          {waitlistCount > 0 && (
+            <span className="absolute top-0 right-1 translate-y-[-50%] w-5 h-5 bg-red-500 rounded-full text-white text-[10px] font-bold flex items-center justify-center">
+              {waitlistCount}
+            </span>
+          )}
+        </button>
+        {settings.reconfirmationEnabled && (
+          <button
+            onClick={() => {
+              const pending = reservations.filter(
+                (r) =>
+                  r.date === service.currentDate &&
+                  r.reconfirmationStatus === 'pending' &&
+                  ['pending', 'confirmed'].includes(r.status) &&
+                  (r.guestPhone || r.guestEmail)
+              )
+              if (pending.length === 0) {
+                alert('No hay reservas pendientes de reconfirmar.')
+                return
+              }
+              if (
+                confirm(
+                  `Enviar reconfirmación por ${settings.reconfirmationChannel === 'email' ? 'Email' : settings.reconfirmationChannel === 'whatsapp' ? 'WhatsApp' : 'WhatsApp y Email'} a ${pending.length} clientes?`
+                )
+              ) {
+                pending.forEach((r) =>
+                  updateReservation(r.id, { reconfirmationStatus: 'confirmed' })
+                )
+                alert(`Reconfirmación enviada a ${pending.length} clientes.`)
+              }
+            }}
+            className="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded flex items-center gap-1.5 text-xs font-bold uppercase"
+            title="Enviar reconfirmación a todos"
+          >
+            <Bell size={12} />
+          </button>
+        )}
+        <button
+          onClick={onPrint}
+          className="px-3 py-1.5 bg-[#1a2330] hover:bg-[#243040] text-gray-300 rounded flex items-center gap-1.5 text-xs"
+          title="Imprimir turno"
+        >
+          <Printer size={12} />
+        </button>
       </div>
 
       {/* Status filters */}

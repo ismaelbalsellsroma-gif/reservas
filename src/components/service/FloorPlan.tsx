@@ -14,10 +14,11 @@ function getReservationForTable(table: Table, reservations: Reservation[]): Rese
   return reservations.filter((r) => r.tableIds.includes(table.id))
 }
 
-function getTableBackground(reservations: Reservation[]): {
+function getTableBackground(reservations: Reservation[], blocked: boolean): {
   bg: string
   text: string
 } {
+  if (blocked) return { bg: '#1f2937', text: '#64748b' } // gris oscuro bloqueada
   if (reservations.length === 0) return { bg: '#6b3f1b', text: '#fed7aa' } // marrón libre
   const r = reservations[0]
   const colors: Record<string, { bg: string; text: string }> = {
@@ -38,14 +39,16 @@ function getTableBackground(reservations: Reservation[]): {
 function TableShape({
   table,
   reservations,
+  blocked,
   onClick,
 }: {
   table: Table
   reservations: Reservation[]
+  blocked: boolean
   onClick: (e: React.MouseEvent) => void
 }) {
-  const { bg, text } = getTableBackground(reservations)
-  const r = reservations[0]
+  const { bg, text } = getTableBackground(reservations, blocked)
+  const r = !blocked ? reservations[0] : undefined
   const isCombined = r && r.tableIds.length > 1
   const roundRadius = table.shape === 'round' ? Math.min(table.width, table.height) / 2 : 10
 
@@ -93,6 +96,20 @@ function TableShape({
           fill="#fef3c7"
         >
           🔒
+        </text>
+      )}
+      {/* Day-blocked cross */}
+      {blocked && (
+        <text
+          x={table.x + table.width / 2}
+          y={table.y + table.height / 2 + 20}
+          textAnchor="middle"
+          fontSize="18"
+          fill="#ef4444"
+          fontWeight="bold"
+          style={{ pointerEvents: 'none' }}
+        >
+          ✕
         </text>
       )}
       {/* Text content */}
@@ -290,6 +307,7 @@ export function FloorPlan({ onNewReservation, onEditReservation, onMoveReservati
                 key={t.id}
                 table={t}
                 reservations={getReservationForTable(t, dayReservations)}
+                blocked={t.blockedDates.includes(service.currentDate)}
                 onClick={(e) => handleTableClick(t, e)}
               />
             ))}

@@ -60,6 +60,7 @@ export interface Table {
   height: number
   zoneId: string
   webBlocked: boolean // Candado: solo reservable por staff
+  blockedDates: string[] // Fechas en las que esta mesa está bloqueada (no reservable)
   active: boolean
 }
 
@@ -150,6 +151,22 @@ export interface RestaurantSettings {
   darkMode: boolean
   reconfirmationEnabled: boolean
   reconfirmationChannel: 'whatsapp' | 'email' | 'both'
+}
+
+export type WaitlistStatus = 'waiting' | 'notified' | 'seated' | 'cancelled'
+
+export interface WaitlistEntry {
+  id: string
+  name: string
+  phone: string
+  phoneCountry: string
+  partySize: number
+  date: string // YYYY-MM-DD
+  arrivedAt: string // ISO timestamp
+  notes: string
+  status: WaitlistStatus
+  notifiedAt: string | null
+  estimatedWaitMinutes: number
 }
 
 // Estado de la UI del servicio

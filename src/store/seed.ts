@@ -42,27 +42,27 @@ export function seed(): {
 
   const tables: Table[] = [
     // Comedor
-    { id: 't1', name: '1', capacityMin: 1, capacityMax: 4, shape: 'rectangle-narrow', isHigh: false, x: 80, y: 150, width: 90, height: 70, zoneId: 'z-comedor', webBlocked: false, active: true },
-    { id: 't2', name: '2', capacityMin: 1, capacityMax: 4, shape: 'rectangle-narrow', isHigh: false, x: 80, y: 250, width: 90, height: 70, zoneId: 'z-comedor', webBlocked: false, active: true },
-    { id: 't3', name: '3', capacityMin: 2, capacityMax: 6, shape: 'rectangle-narrow', isHigh: false, x: 80, y: 350, width: 90, height: 70, zoneId: 'z-comedor', webBlocked: false, active: true },
-    { id: 't4', name: '4', capacityMin: 2, capacityMax: 6, shape: 'rectangle-narrow', isHigh: false, x: 80, y: 450, width: 90, height: 70, zoneId: 'z-comedor', webBlocked: false, active: true },
-    { id: 't5', name: '5', capacityMin: 1, capacityMax: 2, shape: 'square', isHigh: false, x: 240, y: 550, width: 60, height: 60, zoneId: 'z-comedor', webBlocked: false, active: true },
-    { id: 't6', name: '6', capacityMin: 1, capacityMax: 2, shape: 'square', isHigh: false, x: 320, y: 620, width: 60, height: 60, zoneId: 'z-comedor', webBlocked: false, active: true },
-    { id: 't7', name: '7', capacityMin: 1, capacityMax: 4, shape: 'square', isHigh: false, x: 340, y: 460, width: 70, height: 70, zoneId: 'z-comedor', webBlocked: false, active: true },
-    { id: 't8', name: '8', capacityMin: 1, capacityMax: 4, shape: 'square', isHigh: false, x: 450, y: 460, width: 70, height: 70, zoneId: 'z-comedor', webBlocked: false, active: true },
-    { id: 't9', name: '9', capacityMin: 1, capacityMax: 2, shape: 'square', isHigh: false, x: 340, y: 370, width: 70, height: 70, zoneId: 'z-comedor', webBlocked: false, active: true },
-    { id: 't10', name: '10', capacityMin: 1, capacityMax: 4, shape: 'square', isHigh: false, x: 450, y: 370, width: 70, height: 70, zoneId: 'z-comedor', webBlocked: false, active: true },
-    { id: 't11', name: '11', capacityMin: 2, capacityMax: 4, shape: 'rectangle-narrow', isHigh: false, x: 80, y: 70, width: 90, height: 70, zoneId: 'z-comedor', webBlocked: false, active: true },
+    { id: 't1', name: '1', capacityMin: 1, capacityMax: 4, shape: 'rectangle-narrow', isHigh: false, x: 80, y: 150, width: 90, height: 70, zoneId: 'z-comedor', webBlocked: false, blockedDates: [], active: true},
+    { id: 't2', name: '2', capacityMin: 1, capacityMax: 4, shape: 'rectangle-narrow', isHigh: false, x: 80, y: 250, width: 90, height: 70, zoneId: 'z-comedor', webBlocked: false, blockedDates: [], active: true},
+    { id: 't3', name: '3', capacityMin: 2, capacityMax: 6, shape: 'rectangle-narrow', isHigh: false, x: 80, y: 350, width: 90, height: 70, zoneId: 'z-comedor', webBlocked: false, blockedDates: [], active: true},
+    { id: 't4', name: '4', capacityMin: 2, capacityMax: 6, shape: 'rectangle-narrow', isHigh: false, x: 80, y: 450, width: 90, height: 70, zoneId: 'z-comedor', webBlocked: false, blockedDates: [], active: true},
+    { id: 't5', name: '5', capacityMin: 1, capacityMax: 2, shape: 'square', isHigh: false, x: 240, y: 550, width: 60, height: 60, zoneId: 'z-comedor', webBlocked: false, blockedDates: [], active: true},
+    { id: 't6', name: '6', capacityMin: 1, capacityMax: 2, shape: 'square', isHigh: false, x: 320, y: 620, width: 60, height: 60, zoneId: 'z-comedor', webBlocked: false, blockedDates: [], active: true},
+    { id: 't7', name: '7', capacityMin: 1, capacityMax: 4, shape: 'square', isHigh: false, x: 340, y: 460, width: 70, height: 70, zoneId: 'z-comedor', webBlocked: false, blockedDates: [], active: true},
+    { id: 't8', name: '8', capacityMin: 1, capacityMax: 4, shape: 'square', isHigh: false, x: 450, y: 460, width: 70, height: 70, zoneId: 'z-comedor', webBlocked: false, blockedDates: [], active: true},
+    { id: 't9', name: '9', capacityMin: 1, capacityMax: 2, shape: 'square', isHigh: false, x: 340, y: 370, width: 70, height: 70, zoneId: 'z-comedor', webBlocked: false, blockedDates: [], active: true},
+    { id: 't10', name: '10', capacityMin: 1, capacityMax: 4, shape: 'square', isHigh: false, x: 450, y: 370, width: 70, height: 70, zoneId: 'z-comedor', webBlocked: false, blockedDates: [], active: true},
+    { id: 't11', name: '11', capacityMin: 2, capacityMax: 4, shape: 'rectangle-narrow', isHigh: false, x: 80, y: 70, width: 90, height: 70, zoneId: 'z-comedor', webBlocked: false, blockedDates: [], active: true},
     // Barra
-    { id: 't100', name: '100', capacityMin: 1, capacityMax: 2, shape: 'square', isHigh: true, x: 500, y: 100, width: 50, height: 50, zoneId: 'z-barra', webBlocked: true, active: true },
-    { id: 't101', name: '101', capacityMin: 1, capacityMax: 2, shape: 'square', isHigh: true, x: 440, y: 100, width: 50, height: 50, zoneId: 'z-barra', webBlocked: true, active: true },
+    { id: 't100', name: '100', capacityMin: 1, capacityMax: 2, shape: 'square', isHigh: true, x: 500, y: 100, width: 50, height: 50, zoneId: 'z-barra', webBlocked: true, blockedDates: [], active: true},
+    { id: 't101', name: '101', capacityMin: 1, capacityMax: 2, shape: 'square', isHigh: true, x: 440, y: 100, width: 50, height: 50, zoneId: 'z-barra', webBlocked: true, blockedDates: [], active: true},
     // Terrassa
-    { id: 't20', name: '20', capacityMin: 4, capacityMax: 10, shape: 'square', isHigh: false, x: 120, y: 120, width: 80, height: 80, zoneId: 'z-terraza', webBlocked: false, active: true },
-    { id: 't21', name: '21', capacityMin: 2, capacityMax: 4, shape: 'square', isHigh: false, x: 240, y: 120, width: 70, height: 70, zoneId: 'z-terraza', webBlocked: false, active: true },
-    { id: 't22', name: '22', capacityMin: 2, capacityMax: 4, shape: 'round', isHigh: false, x: 360, y: 120, width: 70, height: 70, zoneId: 'z-terraza', webBlocked: false, active: true },
+    { id: 't20', name: '20', capacityMin: 4, capacityMax: 10, shape: 'square', isHigh: false, x: 120, y: 120, width: 80, height: 80, zoneId: 'z-terraza', webBlocked: false, blockedDates: [], active: true},
+    { id: 't21', name: '21', capacityMin: 2, capacityMax: 4, shape: 'square', isHigh: false, x: 240, y: 120, width: 70, height: 70, zoneId: 'z-terraza', webBlocked: false, blockedDates: [], active: true},
+    { id: 't22', name: '22', capacityMin: 2, capacityMax: 4, shape: 'round', isHigh: false, x: 360, y: 120, width: 70, height: 70, zoneId: 'z-terraza', webBlocked: false, blockedDates: [], active: true},
     // Privat
-    { id: 't301', name: '301', capacityMin: 4, capacityMax: 12, shape: 'rectangle-wide', isHigh: false, x: 120, y: 120, width: 200, height: 80, zoneId: 'z-privat', webBlocked: false, active: true },
-    { id: 't302', name: '302', capacityMin: 4, capacityMax: 8, shape: 'rectangle-wide', isHigh: false, x: 120, y: 240, width: 200, height: 80, zoneId: 'z-privat', webBlocked: false, active: true },
+    { id: 't301', name: '301', capacityMin: 4, capacityMax: 12, shape: 'rectangle-wide', isHigh: false, x: 120, y: 120, width: 200, height: 80, zoneId: 'z-privat', webBlocked: false, blockedDates: [], active: true},
+    { id: 't302', name: '302', capacityMin: 4, capacityMax: 8, shape: 'rectangle-wide', isHigh: false, x: 120, y: 240, width: 200, height: 80, zoneId: 'z-privat', webBlocked: false, blockedDates: [], active: true},
   ]
 
   const decorations: Decoration[] = [

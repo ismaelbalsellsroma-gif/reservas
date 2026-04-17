@@ -41,3 +41,28 @@ input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0px 1000px #1a2330 inset;
   transition: background-color 5000s ease-in-out 0s;
 }
+
+/* Print styles */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+  html, body, #root {
+    background: white !important;
+    color: black !important;
+    overflow: visible !important;
+    height: auto !important;
+  }
+  body > * {
+    visibility: hidden;
+  }
+  .fixed.inset-0 {
+    position: static !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+  .fixed.inset-0 * {
+    visibility: visible;
+  }
+}

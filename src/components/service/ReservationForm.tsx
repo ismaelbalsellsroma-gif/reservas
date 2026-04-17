@@ -8,6 +8,13 @@ interface ReservationFormProps {
   reservation?: Reservation
   initialTableId?: string
   walkIn?: boolean
+  prefillGuest?: {
+    name: string
+    phone: string
+    phoneCountry: string
+    partySize: number
+    notes: string
+  }
   onClose: () => void
 }
 
@@ -26,7 +33,7 @@ const countries = [
   { v: '+39', l: 'ITALIA (+39)' },
 ]
 
-export function ReservationForm({ reservation, initialTableId, walkIn, onClose }: ReservationFormProps) {
+export function ReservationForm({ reservation, initialTableId, walkIn, prefillGuest, onClose }: ReservationFormProps) {
   const tables = useStore((s) => s.tables)
   const zones = useStore((s) => s.zones)
   const plantas = useStore((s) => s.plantas)
@@ -45,7 +52,7 @@ export function ReservationForm({ reservation, initialTableId, walkIn, onClose }
 
   const [date, setDate] = useState(reservation?.date || service.currentDate)
   const [time, setTime] = useState(reservation?.time || '13:30')
-  const [partySize, setPartySize] = useState(reservation?.partySize || 2)
+  const [partySize, setPartySize] = useState(reservation?.partySize || prefillGuest?.partySize || 2)
   const [duration, setDuration] = useState(settings.defaultReservationDuration)
   const [zoneId, setZoneId] = useState<string>('')
   const [tableIds, setTableIds] = useState<string[]>(
@@ -61,14 +68,20 @@ export function ReservationForm({ reservation, initialTableId, walkIn, onClose }
   const [reference] = useState('')
   const [prescriptor, setPrescriptor] = useState(reservation?.prescriptor || '')
   const [reservationTags, setReservationTags] = useState<string[]>(reservation?.tags || [])
-  const [notes, setNotes] = useState(reservation?.notes || '')
+  const [notes, setNotes] = useState(reservation?.notes || prefillGuest?.notes || '')
   const [guestNotes, setGuestNotes] = useState(reservation?.guestNotes || '')
 
   // Guest data
-  const [guestName, setGuestName] = useState(reservation?.guestName || (walkInDefault ? 'WALK' : ''))
-  const [guestSurname, setGuestSurname] = useState(reservation?.guestSurname || (walkInDefault ? 'IN' : ''))
-  const [guestPhoneCountry, setGuestPhoneCountry] = useState(reservation?.guestPhoneCountry || '+34')
-  const [guestPhone, setGuestPhone] = useState(reservation?.guestPhone || '')
+  const [guestName, setGuestName] = useState(
+    reservation?.guestName || prefillGuest?.name || (walkInDefault ? 'WALK' : '')
+  )
+  const [guestSurname, setGuestSurname] = useState(
+    reservation?.guestSurname || (walkInDefault && !prefillGuest ? 'IN' : '')
+  )
+  const [guestPhoneCountry, setGuestPhoneCountry] = useState(
+    reservation?.guestPhoneCountry || prefillGuest?.phoneCountry || '+34'
+  )
+  const [guestPhone, setGuestPhone] = useState(reservation?.guestPhone || prefillGuest?.phone || '')
   const [guestEmail, setGuestEmail] = useState(reservation?.guestEmail || '')
   const [guestLanguage, setGuestLanguage] = useState(reservation?.guestLanguage || 'es')
   const [guestCompany, setGuestCompany] = useState(reservation?.guestCompany || '')

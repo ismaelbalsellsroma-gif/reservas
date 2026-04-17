@@ -3,11 +3,12 @@ import { useStore } from '../../store'
 
 interface HeaderProps {
   onNewReservation: () => void
+  onWalkIn: () => void
   searchQuery: string
   onSearchChange: (q: string) => void
 }
 
-export function Header({ onNewReservation, searchQuery, onSearchChange }: HeaderProps) {
+export function Header({ onNewReservation, onWalkIn, searchQuery, onSearchChange }: HeaderProps) {
   const settings = useStore((s) => s.settings)
 
   return (
@@ -36,7 +37,11 @@ export function Header({ onNewReservation, searchQuery, onSearchChange }: Header
       <button title="Turnos" className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-amber-300 hover:bg-[#1a2330] rounded-lg">
         <Utensils size={18} />
       </button>
-      <button title="Walk-in" className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-amber-300 hover:bg-[#1a2330] rounded-lg">
+      <button
+        onClick={onWalkIn}
+        title="Walk-in rápido"
+        className="w-9 h-9 flex items-center justify-center text-emerald-400 hover:text-emerald-300 hover:bg-[#1a2330] rounded-lg"
+      >
         <Hand size={18} />
       </button>
 

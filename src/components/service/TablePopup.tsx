@@ -32,9 +32,12 @@ export function TablePopup({
   onMoveReservation,
 }: TablePopupProps) {
   const toggleWebBlock = useStore((s) => s.toggleTableWebBlock)
+  const toggleBlockDate = useStore((s) => s.toggleTableBlockDate)
   const setReservationStatus = useStore((s) => s.setReservationStatus)
   const addReservation = useStore((s) => s.addReservation)
   const deleteReservation = useStore((s) => s.deleteReservation)
+  const serviceDate = useStore((s) => s.service.currentDate)
+  const isBlockedToday = table.blockedDates.includes(serviceDate)
 
   const tableReservations = useMemo(
     () => reservations.sort((a, b) => a.time.localeCompare(b.time)),
@@ -123,12 +126,27 @@ export function TablePopup({
           >
             BLOQUEAR WEB
           </button>
-          <button className="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-300 rounded text-xs font-semibold text-slate-700">
-            BLOQUEAR
+          <button
+            onClick={() => {
+              toggleBlockDate(table.id, serviceDate)
+              onClose()
+            }}
+            className={cn(
+              'px-3 py-1.5 border rounded text-xs font-semibold',
+              isBlockedToday
+                ? 'bg-red-100 border-red-300 text-red-900'
+                : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'
+            )}
+            title={isBlockedToday ? 'Desbloquear para hoy' : 'Bloquear mesa para hoy'}
+          >
+            {isBlockedToday ? 'DESBLOQUEAR' : 'BLOQUEAR'}
           </button>
-          <button className="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-300 rounded text-xs font-semibold text-slate-700">
+          <a
+            href="#/floor-editor"
+            className="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-300 rounded text-xs font-semibold text-slate-700"
+          >
             MODIFICAR
-          </button>
+          </a>
           <button onClick={onClose} className="p-1 hover:bg-slate-200 rounded">
             <X size={18} className="text-slate-500" />
           </button>

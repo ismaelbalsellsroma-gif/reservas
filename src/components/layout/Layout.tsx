@@ -13,6 +13,7 @@ export function Layout() {
       <div className="flex-1 flex flex-col min-w-0">
         <Header
           onNewReservation={() => navigate('/?newReservation=1')}
+          onWalkIn={() => navigate('/?walkIn=1')}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
         />

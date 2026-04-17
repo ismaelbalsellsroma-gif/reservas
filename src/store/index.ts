@@ -12,6 +12,8 @@ import type {
   Shift,
   RestaurantSettings,
   ServiceState,
+  WaitlistEntry,
+  WaitlistStatus,
 } from '../types'
 import { generateId, generateCode, getTodayString } from '../lib/utils'
 import { seed } from './seed'
@@ -29,6 +31,7 @@ interface AppState {
   shifts: Shift[]
   settings: RestaurantSettings
   tags: string[] // Etiquetas disponibles
+  waitlist: WaitlistEntry[]
 
   // UI state
   service: ServiceState
@@ -45,6 +48,7 @@ interface AppState {
   updateTable: (id: string, data: Partial<Table>) => void
   deleteTable: (id: string) => void
   toggleTableWebBlock: (id: string) => void
+  toggleTableBlockDate: (id: string, date: string) => void
 
   // Actions - Zones / Plantas
   addPlanta: (name: string) => string
@@ -86,6 +90,12 @@ interface AppState {
   addTag: (tag: string) => void
   removeTag: (tag: string) => void
 
+  // Waitlist
+  addWaitlistEntry: (e: Omit<WaitlistEntry, 'id' | 'arrivedAt' | 'notifiedAt' | 'status'>) => string
+  updateWaitlistEntry: (id: string, data: Partial<WaitlistEntry>) => void
+  deleteWaitlistEntry: (id: string) => void
+  setWaitlistStatus: (id: string, status: WaitlistStatus) => void
+
   // Settings
   updateSettings: (data: Partial<RestaurantSettings>) => void
 
@@ -102,6 +112,7 @@ export const useStore = create<AppState>()(
   persist(
     (set, get) => ({
       ...seed(),
+      waitlist: [],
       service: {
         currentDate: getTodayString(),
         currentShiftId: null,
@@ -180,6 +191,19 @@ export const useStore = create<AppState>()(
           tables: state.tables.map((t) =>
             t.id === id ? { ...t, webBlocked: !t.webBlocked } : t
           ),
+        })),
+      toggleTableBlockDate: (id, date) =>
+        set((state) => ({
+          tables: state.tables.map((t) => {
+            if (t.id !== id) return t
+            const blocked = t.blockedDates.includes(date)
+            return {
+              ...t,
+              blockedDates: blocked
+                ? t.blockedDates.filter((d) => d !== date)
+                : [...t.blockedDates, date],
+            }
+          }),
         })),
 
       // Plantas / Zones
@@ -330,6 +354,38 @@ export const useStore = create<AppState>()(
         })),
       removeTag: (tag) =>
         set((state) => ({ tags: state.tags.filter((t) => t !== tag) })),
+
+      // Waitlist
+      addWaitlistEntry: (e) => {
+        const id = generateId()
+        set((state) => ({
+          waitlist: [
+            ...state.waitlist,
+            {
+              ...e,
+              id,
+              arrivedAt: new Date().toISOString(),
+              notifiedAt: null,
+              status: 'waiting' as const,
+            },
+          ],
+        }))
+        return id
+      },
+      updateWaitlistEntry: (id, data) =>
+        set((state) => ({
+          waitlist: state.waitlist.map((w) => (w.id === id ? { ...w, ...data } : w)),
+        })),
+      deleteWaitlistEntry: (id) =>
+        set((state) => ({ waitlist: state.waitlist.filter((w) => w.id !== id) })),
+      setWaitlistStatus: (id, status) =>
+        set((state) => ({
+          waitlist: state.waitlist.map((w) =>
+            w.id === id
+              ? { ...w, status, notifiedAt: status === 'notified' ? new Date().toISOString() : w.notifiedAt }
+              : w
+          ),
+        })),
 
       updateSettings: (data) =>
         set((state) => ({ settings: { ...state.settings, ...data } })),
