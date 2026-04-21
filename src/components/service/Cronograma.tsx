@@ -16,6 +16,7 @@ export function Cronograma({ onSelectReservation, onNewReservation }: Cronograma
   const shifts = useStore((s) => s.shifts)
   const service = useStore((s) => s.service)
   const settings = useStore((s) => s.settings)
+  const setPlanta = useStore((s) => s.setServicePlanta)
 
   const currentPlantaId = service.currentPlantaId || plantas[0]?.id
   const plantaZoneIds = useMemo(
@@ -82,7 +83,7 @@ export function Cronograma({ onSelectReservation, onNewReservation }: Cronograma
         {plantas.map((p) => (
           <button
             key={p.id}
-            onClick={() => useStore.getState().setServicePlanta(p.id)}
+            onClick={() => setPlanta(p.id)}
             className={cn(
               'px-4 py-1.5 rounded-t text-xs font-semibold transition-colors',
               p.id === currentPlantaId

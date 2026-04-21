@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from 'react'
+import { useState, useRef, useMemo, useEffect } from 'react'
 import { Plus, Trash2, Move, Lock, Unlock } from 'lucide-react'
 import { useStore } from '../store'
 import { cn } from '../lib/utils'
@@ -59,8 +59,7 @@ export function FloorEditorPage() {
   const plantaTables = useMemo(() => tables.filter((t) => plantaZoneIds.has(t.zoneId)), [tables, plantaZoneIds])
   const plantaDecorations = useMemo(() => decorations.filter((d) => d.plantaId === currentPlantaId), [decorations, currentPlantaId])
 
-  // Set default zone if not set
-  useMemo(() => {
+  useEffect(() => {
     if (!newZoneId && plantaZones[0]) setNewZoneId(plantaZones[0].id)
   }, [newZoneId, plantaZones])
 

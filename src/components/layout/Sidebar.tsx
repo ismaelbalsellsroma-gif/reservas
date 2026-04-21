@@ -1,13 +1,13 @@
 import { NavLink } from 'react-router-dom'
-import { CalendarDays, Users, Settings, Gamepad2, Ticket, Lightbulb } from 'lucide-react'
+import { CalendarDays, Users, Settings, LayoutPanelLeft, Clock, Lightbulb } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
 const links = [
   { to: '/', icon: CalendarDays, label: 'Reservas' },
   { to: '/clients', icon: Users, label: 'Clientes' },
   { to: '/settings', icon: Settings, label: 'Configuración' },
-  { to: '/floor-editor', icon: Gamepad2, label: 'Editor de sala' },
-  { to: '/shifts', icon: Ticket, label: 'Turnos' },
+  { to: '/floor-editor', icon: LayoutPanelLeft, label: 'Editor de sala' },
+  { to: '/shifts', icon: Clock, label: 'Turnos' },
 ]
 
 export function Sidebar() {

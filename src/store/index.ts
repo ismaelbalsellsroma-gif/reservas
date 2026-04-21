@@ -126,17 +126,48 @@ export const useStore = create<AppState>()(
         const now = new Date().toISOString()
         set((state) => {
           const existingGuest = state.guests.find((g) => g.phone === r.guestPhone && r.guestPhone)
-          const updatedGuests = existingGuest
-            ? state.guests.map((g) =>
-                g.id === existingGuest.id
-                  ? { ...g, visits: g.visits + 1, lastVisit: r.date }
-                  : g
-              )
-            : state.guests
+          let updatedGuests = state.guests
+          let guestId = r.guestId
+
+          if (existingGuest) {
+            guestId = existingGuest.id
+            updatedGuests = state.guests.map((g) =>
+              g.id === existingGuest.id
+                ? { ...g, visits: g.visits + 1, lastVisit: r.date }
+                : g
+            )
+          } else if (r.guestPhone && r.guestName && r.guestName !== 'WALK') {
+            const newGuestId = generateId()
+            guestId = newGuestId
+            updatedGuests = [
+              ...state.guests,
+              {
+                id: newGuestId,
+                name: r.guestName,
+                surname: r.guestSurname,
+                phone: r.guestPhone,
+                phoneCountry: r.guestPhoneCountry,
+                email: r.guestEmail,
+                language: r.guestLanguage,
+                company: r.guestCompany,
+                notes: '',
+                tags: [],
+                vip: false,
+                visits: 1,
+                noShows: 0,
+                cancellations: 0,
+                lastVisit: r.date,
+                marketingConsent: false,
+                createdAt: now,
+              },
+            ]
+          }
+
           const newReservation: Reservation = {
             ...r,
             id,
             code,
+            guestId,
             createdAt: now,
             updatedAt: now,
           }
@@ -161,11 +192,42 @@ export const useStore = create<AppState>()(
         })),
 
       setReservationStatus: (id, status) =>
-        set((state) => ({
-          reservations: state.reservations.map((r) =>
-            r.id === id ? { ...r, status, updatedAt: new Date().toISOString() } : r
-          ),
-        })),
+        set((state) => {
+          const reservation = state.reservations.find((r) => r.id === id)
+          if (!reservation) return state
+
+          let updatedGuests = state.guests
+          if (reservation.guestId) {
+            const guest = state.guests.find((g) => g.id === reservation.guestId)
+            if (guest) {
+              const isCompleting = status === 'completed' && reservation.status !== 'completed'
+              const isNoShow = status === 'no-show' && reservation.status !== 'no-show'
+              const isCancelling =
+                (status === 'cancelled' || status === 'cancelled-client') &&
+                reservation.status !== 'cancelled' &&
+                reservation.status !== 'cancelled-client'
+              if (isCompleting || isNoShow || isCancelling) {
+                updatedGuests = state.guests.map((g) =>
+                  g.id === guest.id
+                    ? {
+                        ...g,
+                        ...(isCompleting && { visits: g.visits + 1, lastVisit: reservation.date }),
+                        ...(isNoShow && { noShows: g.noShows + 1 }),
+                        ...(isCancelling && { cancellations: g.cancellations + 1 }),
+                      }
+                    : g
+                )
+              }
+            }
+          }
+
+          return {
+            reservations: state.reservations.map((r) =>
+              r.id === id ? { ...r, status, updatedAt: new Date().toISOString() } : r
+            ),
+            guests: updatedGuests,
+          }
+        }),
 
       moveReservationTables: (id, tableIds) =>
         set((state) => ({

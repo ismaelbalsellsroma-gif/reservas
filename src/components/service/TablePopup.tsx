@@ -31,6 +31,7 @@ export function TablePopup({
   onEditReservation,
   onMoveReservation,
 }: TablePopupProps) {
+  const tables = useStore((s) => s.tables)
   const toggleWebBlock = useStore((s) => s.toggleTableWebBlock)
   const toggleBlockDate = useStore((s) => s.toggleTableBlockDate)
   const setReservationStatus = useStore((s) => s.setReservationStatus)
@@ -167,8 +168,8 @@ export function TablePopup({
                   {r.time} {r.guestName.toUpperCase()} {r.guestSurname.toUpperCase()} · {r.partySize} PAX
                   {r.tableIds.length > 1 && (
                     <span className="text-slate-500"> · MESAS {r.tableIds.map((tid) => {
-                      const t = useStore.getState().tables.find((t) => t.id === tid)
-                      return t?.name
+                      const tbl = tables.find((tb) => tb.id === tid)
+                      return tbl?.name
                     }).join(',')}</span>
                   )}
                 </span>
